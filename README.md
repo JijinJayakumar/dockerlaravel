@@ -66,6 +66,10 @@ $ yarn down
 ```shell
 $ yarn status
 ```
+- **Composer Install**
+```shell
+$ yarn composer
+```
 - **Generating app key**
 ```shell
 $ yarn key
