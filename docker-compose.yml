@@ -1,0 +1,54 @@
+version: "3.8"
+services: 
+    app:
+        build: 
+            args: 
+                user: cyborg
+                uid: 1000
+            context: ./docker
+            dockerfile: Dockerfile
+        image: assessment-app:v1
+        container_name: lara_app
+        restart: unless-stopped
+        working_dir: /var/www/
+        volumes: 
+            - ./fw:/var/www
+        depends_on: 
+            - db
+    
+    db:
+        image: mysql:5.7
+        container_name: lara_db
+        restart: unless-stopped
+        environment:
+            MYSQL_DATABASE: laravel
+            MYSQL_ROOT_PASSWORD: secret
+            SERVICE_TAGS: dev
+            SERVICE_NAME: mysql
+        ports: 
+            - 3306:3306
+        volumes: 
+            - ./.MySql_DATA:/var/lib/mysql
+        
+    web:
+        image: nginx:alpine
+        container_name: lara_nginx
+        restart: unless-stopped
+        ports: 
+            - 8000:80
+        volumes: 
+            - ./fw:/var/www
+            - ./nginx:/etc/nginx/conf.d/
+        depends_on: 
+            - db
+            - app
+    
+    admin:
+        image: phpmyadmin/phpmyadmin
+        container_name: lara_admin
+        ports: 
+            - 8001:80
+        environment: 
+            PMA_USER: root
+            PMA_PASSWORD: riosis
+        
